@@ -12,40 +12,38 @@ refs.form.addEventListener('submit', onFormSubmit);
 refs.form.addEventListener('input', throttle(onFormInput, 500));
 
 const savedFeedbackState = localStorage.getItem(STORAGE_KEY);
-const parsedFeedbackState = JSON.parse(savedFeedbackState);
-
-let feedbackData = { email: '', message: '' };
-
-if (savedFeedbackState) {
-  feedbackData = parsedFeedbackState;
-}
+let parsedFeedbackState = JSON.parse(savedFeedbackState) ?? {
+  email: '',
+  message: '',
+};
 
 formWithSavedValue();
 
 function onFormSubmit(evt) {
   evt.preventDefault();
   if (refs.emailInput.value && refs.messageInput.value) {
-    console.log(feedbackData);
+    console.log(parsedFeedbackState);
     localStorage.removeItem(STORAGE_KEY);
-    feedbackData = { email: '', message: '' };
+    parsedFeedbackState = { email: '', message: '' };
     refs.form.reset();
+  } else {
+    alert('All fields must be filled in to submit feedback!!!');
   }
 }
 
 function onFormInput(evt) {
-  //   console.log();
   const inputName = evt.target.name;
   const inputValue = evt.target.value;
 
-  feedbackData[inputName] = inputValue;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(feedbackData));
+  parsedFeedbackState[inputName] = inputValue;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedFeedbackState));
 }
 
 function formWithSavedValue() {
-  if (feedbackData.email) {
-    refs.emailInput.value = feedbackData.email;
+  if (parsedFeedbackState.email) {
+    refs.emailInput.value = parsedFeedbackState.email;
   }
-  if (feedbackData.message) {
-    refs.messageInput.value = feedbackData.message;
+  if (parsedFeedbackState.message) {
+    refs.messageInput.value = parsedFeedbackState.message;
   }
 }
